@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tournament {
+  id                Int           @id @default(autoincrement())
+  code              String        @unique
+  nom               String
+  etat              String
+  stack_initial     Int
+  valeur_cave       Int
+  nb_tables         Int
+  joueurs_par_table Int
+  recave_max        Int?
+  niveau_recave_max Int?
+  jetons            Json
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+  tables            Table[]
+  players           Player[]
+  blind_levels      BlindLevel[]
+  admin_sessions    AdminSession[]
+  tournament_states TournamentState[]
+  clock             Clock?
+}
+
+model Clock {
+  id               Int      @id @default(autoincrement())
+  tournament       Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId     Int      @unique
+  currentLevel     Int      // Niveau actuel (index dans la structure, pas "numéro" mais "ordre")
+  levelStartAt     DateTime // Timestamp de début du niveau courant (en UTC)
+  elapsed          Int      // Temps déjà écoulé (en secondes) sur ce niveau (en cas de pause/reprise)
+  paused           Boolean  @default(false)
+  updated_at       DateTime @updatedAt
+}
+
+model Table {
+  id            Int       @id @default(autoincrement())
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId  Int
+  numero        Int
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  players       Player[]
+  fermee        Boolean   @default(false)
+}
+
+model Player {
+  id            Int       @id @default(autoincrement())
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId  Int
+  nom           String
+  pseudo        String
+  table         Table?    @relation(fields: [tableId], references: [id])
+  tableId       Int?
+  siege         Int?
+  is_out        Boolean   @default(false)
+  recaves       Int       @default(0)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+}
+
+model BlindLevel {
+  id           Int       @id @default(autoincrement())
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId Int
+  niveau       Int      // Numéro affiché (1, 2, 3, etc)
+  sb           Int?
+  bb           Int?
+  ante         Int?
+  duree        Int
+  is_pause     Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+}
+
+model TournamentState {
+  id           Int       @id @default(autoincrement())
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId Int
+  etat         String
+  timestamp    DateTime  @default(now())
+}
+
+model AdminSession {
+  id           Int       @id @default(autoincrement())
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId Int
+  token        String    @unique
+  created_at   DateTime  @default(now())
+  last_seen_at DateTime  @default(now())
+}
