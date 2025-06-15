@@ -4,12 +4,14 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Active CORS pour le front (localhost:4200)
   app.enableCors({
-    origin: ['http://localhost:4200'],
-    credentials: true, // si tu veux utiliser des cookies ou Authorization
+    origin: [
+      'http://localhost:4200',
+      'https://poker-tournament.pointvirgule.dev'
+    ],
+    credentials: true,
   });
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();
