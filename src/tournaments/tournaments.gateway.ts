@@ -15,9 +15,12 @@ import { PrismaService } from 'prisma/prisma.service';
 
     constructor(private readonly prisma: PrismaService) {}
   
-    handleConnection(socket: Socket) {}
+    handleConnection(socket: Socket) {
+      console.log('[WebSocket] Nouvelle connexion', socket.id);
+    }
   
     handleDisconnect(socket: Socket) {
+      console.log('[WebSocket] Nouvelle déconnexion', socket.id);
       this.connections.delete(socket.id);
     }
   
