@@ -42,6 +42,7 @@ export class ClockSchedulerService implements OnModuleInit {
           }
         });
         this.gateway.emitTournamentState(clock.tournament.code, await this.tournamentState(clock.tournament.code));
+        this.gateway.emitBlindsUp(clock.tournament.code, current.niveau);
       }
     }
   }

@@ -103,6 +103,9 @@ import { PrismaService } from 'prisma/prisma.service';
     emitTournamentState(code: string, payload: any) {
       this.server.to(code).emit('tournamentStateUpdated', payload);
     }
+    emitBlindsUp(code: string, payload: any) {
+      this.server.to(code).emit('blindsUp', payload);
+    }
     emitPlayerEliminated(code: string, payload: any) {
       this.server.to(code).emit('playerEliminated', payload);
     }

@@ -244,6 +244,7 @@ export class TournamentsService {
     });
 
     this.gateway.emitTournamentState(code, await this.getTournamentStatePayload(code));
+    this.gateway.emitBlindsUp(code, clock.currentLevel);
     return { ok: true };
   }
 
