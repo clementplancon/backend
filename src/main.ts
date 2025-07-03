@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 
 async function bootstrap() {
+  console.log('DATABASE_URL at startup:', process.env.DATABASE_URL);
+
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
