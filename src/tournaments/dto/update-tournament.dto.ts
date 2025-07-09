@@ -7,7 +7,8 @@ export class UpdateTournamentDto {
     recave_max?: number;
     niveau_recave_max?: number;
     jetons?: { couleur: string; valeur: number; label?: string }[];
-    blindes?: {
+    blindes: {
+      id: number;
       niveau: number;
       sb: number;
       bb: number;

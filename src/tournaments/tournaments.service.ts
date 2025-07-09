@@ -105,8 +105,48 @@ export class TournamentsService {
     const updated = await this.prisma.tournament.update({
       where: { id: tournament.id },
       data: {
-        ...updates,
+        code,
+        nom: updates.nom,
+        etat: 'config',
+        stack_initial: updates.stack_initial,
+        valeur_cave: updates.valeur_cave,
+        nb_tables: updates.nb_tables,
+        joueurs_par_table: updates.joueurs_par_table,
+        recave_max: updates.recave_max,
+        niveau_recave_max: updates.niveau_recave_max,
+        jetons: updates.jetons,
         updated_at: new Date(),
+      },
+    });
+
+    // Mise à jour des niveaux de blindes
+    for (const blinde of updates.blindes) {
+      await this.prisma.blindLevel.upsert({
+        where: { id: blinde.id, tournamentId: tournament.id, niveau: blinde.niveau },
+        update: {
+          sb: blinde.sb,
+          bb: blinde.bb,
+          ante: blinde.ante,
+          duree: blinde.duree,
+          is_pause: blinde.is_pause || false,
+        },
+        create: {
+          tournamentId: tournament.id,
+          niveau: blinde.niveau,
+          sb: blinde.sb,
+          bb: blinde.bb,
+          ante: blinde.ante,
+          duree: blinde.duree,
+          is_pause: blinde.is_pause || false,
+        },
+      });
+    }
+
+    // Delete les blindes supprimées
+    await this.prisma.blindLevel.deleteMany({
+      where: {
+        tournamentId: tournament.id,
+        id: { notIn: updates.blindes.map(b => b.id) },
       },
     });
 
