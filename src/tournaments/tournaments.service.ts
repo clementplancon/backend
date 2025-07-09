@@ -129,6 +129,7 @@ export class TournamentsService {
           ante: blinde.ante,
           duree: blinde.duree,
           is_pause: blinde.is_pause || false,
+          updated_at: new Date(),
         },
         create: {
           tournamentId: tournament.id,
