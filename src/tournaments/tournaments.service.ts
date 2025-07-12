@@ -311,23 +311,24 @@ export class TournamentsService {
     if (dto.recave && this.canRecave(player, t, clock?.currentLevel)) {
       await this.prisma.player.update({
         where: { id: player.id },
-        data: { recaves: { increment: 1 }, is_out: false },
+        data: { recaves: { increment: 1 } },
       });
       this.gateway.emitPlayerRecaved(code, { playerId: player.id });
       this.gateway.emitTournamentState(code, await this.getTournamentStatePayload(code));
       return { recave: true };
     }
-
-    // Sinon élimination
-    await this.prisma.player.update({
-      where: { id: player.id },
-      data: { is_out: true, siege: null, tableId: null },
-    });
-    this.gateway.emitPlayerEliminated(code, { playerId: player.id });
-    this.gateway.emitTournamentState(code, await this.getTournamentStatePayload(code));
-
-    // Rééquilibrage à traiter
-    await this.handleRebalancing(t);
+    else {
+      // Sinon élimination
+      await this.prisma.player.update({
+        where: { id: player.id },
+        data: { is_out: true, siege: null, tableId: null },
+      });
+      this.gateway.emitPlayerEliminated(code, { playerId: player.id });
+      this.gateway.emitTournamentState(code, await this.getTournamentStatePayload(code));
+  
+      // Rééquilibrage à traiter
+      await this.handleRebalancing(t);
+    }
 
     // Gestion de la fin de tournoi
     await this.checkIfFinished(t);
