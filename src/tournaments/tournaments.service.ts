@@ -154,7 +154,7 @@ export class TournamentsService {
     await this.prisma.blindLevel.deleteMany({
       where: {
         tournamentId: tournament.id,
-        id: { notIn: updates.blindes.map(b => b.id) },
+        id: { notIn: updates.blindes.map(b => b.id).filter(id => id !== null) },
       },
     });
 
