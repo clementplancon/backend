@@ -183,7 +183,9 @@ export class TournamentsService {
     const tournament = await this.prisma.tournament.findUnique({
       where: { code },
       include: {
-        blind_levels: true,
+        blind_levels: {
+          orderBy: { niveau: 'asc' },
+        },
         players: {include: { table: true }},
         tables: {include: { players: true }},
         clock: true,
