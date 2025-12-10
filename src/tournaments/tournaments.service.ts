@@ -122,7 +122,7 @@ export class TournamentsService {
     // Mise à jour des niveaux de blindes
     for (const blinde of updates.blindes) {
       if (blinde.id) {
-        // Si l'id existe, on fait une mise à jour
+        // update
         await this.prisma.blindLevel.update({
           where: { id: blinde.id },
           data: {
@@ -134,8 +134,8 @@ export class TournamentsService {
             updated_at: new Date(),
           },
         });
-      } else {
-        // Si l'id n'existe pas, on crée une nouvelle entrée
+      }
+      else {
         await this.prisma.blindLevel.create({
           data: {
             tournamentId: tournament.id,
@@ -145,7 +145,7 @@ export class TournamentsService {
             ante: blinde.ante,
             duree: blinde.duree,
             is_pause: blinde.is_pause || false,
-          },
+          }
         });
       }
     }
