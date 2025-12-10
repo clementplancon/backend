@@ -121,26 +121,33 @@ export class TournamentsService {
 
     // Mise à jour des niveaux de blindes
     for (const blinde of updates.blindes) {
-      await this.prisma.blindLevel.upsert({
-        where: { id: blinde.id, tournamentId: tournament.id, niveau: blinde.niveau },
-        update: {
-          sb: blinde.sb,
-          bb: blinde.bb,
-          ante: blinde.ante,
-          duree: blinde.duree,
-          is_pause: blinde.is_pause || false,
-          updated_at: new Date(),
-        },
-        create: {
-          tournamentId: tournament.id,
-          niveau: blinde.niveau,
-          sb: blinde.sb,
-          bb: blinde.bb,
-          ante: blinde.ante,
-          duree: blinde.duree,
-          is_pause: blinde.is_pause || false,
-        },
-      });
+      if (blinde.id) {
+        // Si l'id existe, on fait une mise à jour
+        await this.prisma.blindLevel.update({
+          where: { id: blinde.id },
+          data: {
+            sb: blinde.sb,
+            bb: blinde.bb,
+            ante: blinde.ante,
+            duree: blinde.duree,
+            is_pause: blinde.is_pause || false,
+            updated_at: new Date(),
+          },
+        });
+      } else {
+        // Si l'id n'existe pas, on crée une nouvelle entrée
+        await this.prisma.blindLevel.create({
+          data: {
+            tournamentId: tournament.id,
+            niveau: blinde.niveau,
+            sb: blinde.sb,
+            bb: blinde.bb,
+            ante: blinde.ante,
+            duree: blinde.duree,
+            is_pause: blinde.is_pause || false,
+          },
+        });
+      }
     }
 
     // Delete les blindes supprimées
