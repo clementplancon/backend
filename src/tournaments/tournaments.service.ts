@@ -119,6 +119,7 @@ export class TournamentsService {
       },
     });
 
+    const updatedBlindeIds: number[] = [];
     // Mise à jour des niveaux de blindes
     for (const blinde of updates.blindes) {
       if (blinde.id) {
@@ -134,9 +135,10 @@ export class TournamentsService {
             updated_at: new Date(),
           },
         });
+        updatedBlindeIds.push(blinde.id);
       }
       else {
-        await this.prisma.blindLevel.create({
+        const newBlinde = await this.prisma.blindLevel.create({
           data: {
             tournamentId: tournament.id,
             niveau: blinde.niveau,
@@ -147,6 +149,7 @@ export class TournamentsService {
             is_pause: blinde.is_pause || false,
           }
         });
+        updatedBlindeIds.push(newBlinde.id);
       }
     }
 
@@ -154,7 +157,7 @@ export class TournamentsService {
     await this.prisma.blindLevel.deleteMany({
       where: {
         tournamentId: tournament.id,
-        id: { notIn: updates.blindes.map(b => b.id).filter(id => id !== null) },
+        id: { notIn: updatedBlindeIds },
       },
     });
 
