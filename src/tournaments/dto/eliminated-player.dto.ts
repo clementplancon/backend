@@ -1,5 +1,11 @@
+import { IsBoolean, IsInt, IsOptional, IsPositive } from 'class-validator';
+
 export class EliminatePlayerDto {
-    playerId: number;
-    recave?: boolean;
-  }
-  
+  @IsInt()
+  @IsPositive()
+  playerId: number;
+
+  @IsOptional()
+  @IsBoolean()
+  recave?: boolean;
+}

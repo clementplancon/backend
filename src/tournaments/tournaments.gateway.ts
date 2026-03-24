@@ -6,7 +6,15 @@ import {
 import { PrismaService } from 'prisma/prisma.service';
   import { Server, Socket } from 'socket.io';
   
-  @WebSocketGateway({ cors: { origin: '*' } })
+  @WebSocketGateway({
+    cors: {
+      origin: [
+        'http://localhost:4200',
+        'https://poker-tournament.pointvirgule.dev',
+      ],
+      credentials: true,
+    },
+  })
   export class TournamentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;

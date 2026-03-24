@@ -1,6 +1,15 @@
+import { IsInt, IsPositive } from 'class-validator';
+
 export class SeatChangeDto {
-    fromTableId: number;
-    toTableId: number;
-    playerId: number;
-  }
-  
+  @IsInt()
+  @IsPositive()
+  fromTableId: number;
+
+  @IsInt()
+  @IsPositive()
+  toTableId: number;
+
+  @IsInt()
+  @IsPositive()
+  playerId: number;
+}

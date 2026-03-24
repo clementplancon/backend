@@ -63,7 +63,7 @@ export class TournamentsService {
         joueurs_par_table: dto.joueurs_par_table,
         recave_max: dto.recave_max,
         niveau_recave_max: dto.niveau_recave_max,
-        jetons: dto.jetons,
+        jetons: dto.jetons.map(j => ({ ...j })),
       },
     });
 
@@ -114,7 +114,7 @@ export class TournamentsService {
         joueurs_par_table: updates.joueurs_par_table,
         recave_max: updates.recave_max,
         niveau_recave_max: updates.niveau_recave_max,
-        jetons: updates.jetons,
+        jetons: updates.jetons?.map(j => ({ ...j })),
         updated_at: new Date(),
       },
     });
