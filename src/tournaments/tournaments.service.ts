@@ -121,7 +121,7 @@ export class TournamentsService {
 
     const updatedBlindeIds: number[] = [];
     // Mise à jour des niveaux de blindes
-    for (const blinde of updates.blindes) {
+    for (const blinde of updates.blindes ?? []) {
       if (blinde.id) {
         // update
         await this.prisma.blindLevel.update({
